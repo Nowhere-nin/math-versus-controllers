@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/math-versus-controllers/sw.js', { scope: '/math-versus-controllers/' })})}
