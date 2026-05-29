@@ -217,10 +217,11 @@
   background-color: #f9fafb;
   padding: 20px 40px 20px 40px;
   border-radius: 20px;
+  width: 80%;
 }
 
 .screen-card h1 {
-  font-size: 3rem;
+  font-size: clamp(2rem, 5vw, 3rem);
 }
 
 .screen-card p {
@@ -384,10 +385,11 @@ button {
   border-radius: 12px;
   background-color: white;
   font-size: 1rem;
-  text-align: left;
+  text-align: center;
   padding: 0 16px;
   margin-left: 10px;
   box-sizing: border-box;
+  color: black;
 }
 
 .exit-buttons{

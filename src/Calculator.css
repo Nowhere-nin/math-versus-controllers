@@ -1,5 +1,5 @@
 .calculator {
-  width: 240px;
+  width: 90%;
   padding: 20px;
   border-radius: 20px;
   background-color: #f4f4f4;
@@ -44,7 +44,7 @@
   height: 55px;
   border: none;
   border-radius: 12px;
-  font-size: 1.3rem;
+  font-size: 1.3rem !important;
   cursor: pointer;
   background-color: #e5e7eb;
   transition: 0.2s;
