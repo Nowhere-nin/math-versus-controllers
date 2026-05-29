@@ -30,7 +30,7 @@ export default function App() {
 
   if (!isJoined) {
     return (
-      <div className='login-container'>
+      <div className='screen-card'>
         <h1>Control de Mando</h1>
         <div className='input-group'>
           <label>Código de la Sala:</label>
@@ -40,6 +40,7 @@ export default function App() {
             value={roomCode}
             onChange={ (e) => setRoomCode(e.target.value) }
             placeholder="Ej: 4829"
+            className='room-code'
           />
         </div>
 
@@ -69,10 +70,10 @@ export default function App() {
   };
 
   return (
-    <div>
-      <div>
-        <p></p>
-        <button></button>
+    <div className='screen-card'>
+      <div className='header'>
+        <p>Sala <strong>{roomCode}</strong></p>
+        <button className='exit-buttons' onClick={ () => setIsJoined(false) }>Salir</button>
       </div>
 
       <Calculator 
