@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { ref, set } from 'firebase/database';
+import { useEffect, useState } from 'react';
+import { onValue, ref, set } from 'firebase/database';
 import { database } from './services/firebaseConfig';
 import Calculator from './components/Calculator';
 import type { Team } from './types/game';
@@ -10,6 +10,9 @@ export default function App() {
   const [ team, setTeam ] = useState<Team | null>(null);
   const [ isJoined, setIsJoined ] = useState(false);
 
+  const [ gameStatus, setGameStatus ] = useState<string>("playing");
+  const [ winner, setWinner ] = useState<Team | null>(null);
+
   const handleJoin = () => {
     if (roomCode.length === 4 && team) {
       setIsJoined(true);
@@ -17,6 +20,12 @@ export default function App() {
       alert("Ingresa un código de 4 dígitos y selecciona un equipo.");
     }
   };
+
+  const handleLeave = () => {
+    setIsJoined(false);
+    setGameStatus("playing");
+    setWinner(null);
+  }
 
   const handleAnswerSubmit = (team: Team, value: number) => {
     const answerRef = ref(database, `rooms/${roomCode}/lastAnswer`);
@@ -27,6 +36,21 @@ export default function App() {
       timestamp: Date.now()
     });
   };
+
+  useEffect( () => {
+    if (!isJoined || !roomCode) return; 
+    const roomRef = ref(database, `rooms/${roomCode}`);
+
+    const unsuscribe = onValue(roomRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        if (data.status) setGameStatus(data.status);
+        if (data.winner) setWinner(data.winner);
+      }
+    });
+
+    return () => unsuscribe();
+  },[isJoined, roomCode]);
 
   if (!isJoined) {
     return (
@@ -69,11 +93,35 @@ export default function App() {
     );
   };
 
+  if (gameStatus === "finished") {
+    const amIWinner = team === winner
+
+    return (
+      <div className={`screen-card end-game-screen ${amIWinner ? "victory" : "defeat"}`}>
+        {amIWinner ? (
+          <div className="result-content">
+            <h2>¡VICTORIA!</h2>
+            <p>¡Excelente! Tu equipo ganó el tira y afloja matemático.</p>
+          </div>
+        ) : (
+          <div className="result-content">
+            <h2>¡Buen intento!</h2>
+            <p>El otro equipo fue más rápido esta vez. ¡A por la revancha!</p>
+          </div>
+        )}
+        
+        <button className='exit-btn-large' onClick={ handleLeave }>
+          Volver al Inicio
+        </button>
+      </div>
+    );
+  }
+
   return (
     <div className='screen-card'>
       <div className='header'>
         <p>Sala <strong>{roomCode}</strong></p>
-        <button className='exit-buttons' onClick={ () => setIsJoined(false) }>Salir</button>
+        <button className='exit-buttons' onClick={ () => handleLeave() }>Salir</button>
       </div>
 
       <Calculator 
